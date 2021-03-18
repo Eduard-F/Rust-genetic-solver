@@ -1,21 +1,24 @@
 const fs = require('fs');
 var g_count = 2;
 var y_count = 4;
+var h_count = 0;
+
+var plants = [
+  {'hyhgyh': {id: 0,parents: [],fifty_fifty: false}},
+  // {'gyygyg': {id: 1,parents: [],fifty_fifty: false}},
+  {'gwyhyw': {id: 2,parents: [],fifty_fifty: false}},
+  {'ghxyyg': {id: 3,parents: [],fifty_fifty: false}},
+  {'wyhyhg': {id: 4,parents: [],fifty_fifty: false}},
+  {'wyhyhg': {id: 5,parents: [],fifty_fifty: false}},
+  {'xgyghh': {id: 6,parents: [],fifty_fifty: false}},
+  {'wggyyh': {id: 7,parents: [],fifty_fifty: false}},
+  {'wghyhh': {id: 8,parents: [],fifty_fifty: false}},
+  {'wyhyhg': {id: 9,parents: [],fifty_fifty: false}},
+]
 
 function run() {
   //Insert Clone genetics. Try to add only 4+ green or max of 2 red genes. If you sort by best genes then it runs faster
-  var plants = [
-    {'hyhgyh': {id: 0,parents: [],fifty_fifty: false}},
-    {'gyygyg': {id: 1,parents: [],fifty_fifty: false}},
-    {'gwyhyw': {id: 2,parents: [],fifty_fifty: false}},
-    {'ghxyyg': {id: 3,parents: [],fifty_fifty: false}},
-    {'wyhyhg': {id: 4,parents: [],fifty_fifty: false}},
-    {'wyhyhg': {id: 5,parents: [],fifty_fifty: false}},
-    {'xgyghh': {id: 6,parents: [],fifty_fifty: false}},
-    {'wggyyh': {id: 7,parents: [],fifty_fifty: false}},
-    {'wghyhh': {id: 8,parents: [],fifty_fifty: false}},
-    {'wyhyhg': {id: 9,parents: [],fifty_fifty: false}},
-  ]
+
   x,w = 1.2
   var temp_arr = []
   var result;
@@ -356,4 +359,95 @@ function geneCalc(obj) {
   return new_gene;
 }
 
-run()
+function checkIfPossible() {
+  var ideal = {
+    "g1":0,"g1":0,"g2":0,"g3":0,"g4":0,"g5":0,"g6":0,
+    "y1":0,"y1":0,"y2":0,"y3":0,"y4":0,"y5":0,"y6":0,
+    "h1":0,"h1":0,"h2":0,"h3":0,"h4":0,"h5":0,"h6":0,
+}
+  for (plant of plants) {
+    let gene_temp1 = Object.keys(plant)[0]
+    if (gene_temp1.substr(0,1) == 'g') { ideal.g1++}
+    if (gene_temp1.substr(0,1) == 'y') { ideal.y1++}
+    if (gene_temp1.substr(0,1) == 'h') { ideal.h1++}
+    if (gene_temp1.substr(1,1) == 'g') { ideal.g2++}
+    if (gene_temp1.substr(1,1) == 'y') { ideal.y2++}
+    if (gene_temp1.substr(1,1) == 'h') { ideal.h2++}
+    if (gene_temp1.substr(2,1) == 'g') { ideal.g3++}
+    if (gene_temp1.substr(2,1) == 'y') { ideal.y3++}
+    if (gene_temp1.substr(2,1) == 'h') { ideal.h3++}
+    if (gene_temp1.substr(3,1) == 'g') { ideal.g4++}
+    if (gene_temp1.substr(3,1) == 'y') { ideal.y4++}
+    if (gene_temp1.substr(3,1) == 'h') { ideal.h4++}
+    if (gene_temp1.substr(4,1) == 'g') { ideal.g5++}
+    if (gene_temp1.substr(4,1) == 'y') { ideal.y5++}
+    if (gene_temp1.substr(4,1) == 'h') { ideal.h5++}
+    if (gene_temp1.substr(5,1) == 'g') { ideal.g6++}
+    if (gene_temp1.substr(5,1) == 'y') { ideal.y6++}
+    if (gene_temp1.substr(5,1) == 'h') { ideal.h6++}
+  }
+  var percentage = 99
+  var ycount, ycount, hcount;
+  for (let k = 0; k <= 6; k++) {
+    if (ideal['g'+k] <= 1 && ideal['y'+k] <= 1 && ideal['h'+k] <= 1 && g_count > 0 && y_count > 0 && h_count > 0) {
+      percentage = 0;
+      break;
+    }
+    else if (ideal['g'+k] <= 1 && ideal['y'+k] <= 1 && g_count > 0 && y_count > 0) {
+      percentage = 0;
+      break;
+    }
+    else if (ideal['g'+k] <= 1 && g_count == 6) {
+      percentage = 0;
+      break;
+    }
+    else if (ideal['y'+k] <= 1 && y_count == 6) {
+      percentage = 0;
+      break;
+    }
+    else if (ideal['h'+k] <= 1 && h_count == 6) {
+      percentage = 0;
+      break;
+    }
+    else if (ideal['g'+k] <= 2 && ideal['y'+k] <= 2 && ideal['h'+k] <= 2 && g_count > 0 && y_count > 0 && h_count > 0) {
+      percentage -= 10;
+      console.log(k+'1')
+    }
+    else if (ideal['g'+k] <= 2 && ideal['y'+k] <= 2 && g_count > 0 && y_count > 0 && h_count == 0) {
+      percentage -= 10;
+      console.log(k+'2')
+    }
+    else if (ideal['g'+k] == 2 && y_count == 0 && h_count == 0) {
+      percentage -= 10;
+      console.log(k+'3')
+    }
+    else if (ideal['y'+k] == 2 && g_count == 0 && h_count == 0) {
+      percentage -= 10;
+      console.log(k+'4')
+    }
+    else if (ideal['h'+k] == 2 && g_count == 0 && y_count == 0) {
+      percentage -= 10;
+      console.log(k+'5')
+    }
+    else if (ideal['g'+k] <= 3 && ideal['y'+k] <= 3 && ideal['h'+k] <= 3 && g_count > 0 && y_count > 0 && h_count > 0) {
+      percentage -= 5;
+    }
+    else if (ideal['g'+k] <= 3 && ideal['y'+k] <= 3 && g_count > 0 && y_count > 0 && h_count > 0) {
+      percentage -= 5;
+    }
+    else if (ideal['g'+k] == 3 && y_count == 0 && h_count == 0) {
+      percentage -= 5;
+    }
+    else if (ideal['y'+k] == 3 && g_count == 0 && h_count == 0) {
+      percentage -= 5;
+    }
+    else if (ideal['h'+k] == 3 && g_count == 0 && y_count == 0) {
+      percentage -= 5;
+    }
+  }
+  return percentage
+}
+
+var percentage = checkIfPossible()
+console.log(percentage + '% chance to solve');
+if (percentage > 50) run()
